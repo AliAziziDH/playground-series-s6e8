@@ -1,0 +1,14 @@
+{
+  "id": "aliazizi1/playground-series-s6e8-starter-pipeline",
+  "title": "playground-series-s6e8-starter-pipeline",
+  "code_file": "playground_s6e8_pipeline.ipynb",
+  "language": "python",
+  "kernel_type": "notebook",
+  "is_private": "false",
+  "enable_gpu": "true",
+  "enable_tpu": "false",
+  "enable_internet": "true",
+  "dataset_sources": [],
+  "competition_sources": [],
+  "kernel_sources": []
+}
