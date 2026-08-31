@@ -1,3 +1,12 @@
+import os
+import sys
+from pathlib import Path
+
+# Add project root directory to sys.path
+PROJECT_ROOT = Path(__file__).resolve().parent.parent
+if str(PROJECT_ROOT) not in sys.path:
+    sys.path.insert(0, str(PROJECT_ROOT))
+
 import pandas as pd
 import numpy as np
 import os
@@ -61,3 +70,10 @@ def run_pipeline(train_path: str, test_path: str, output_path: str = "outputs/su
 
 if __name__ == "__main__":
     run_pipeline("data/train.csv", "data/test.csv")
+    import subprocess
+    print("\n🚀 Running final sanity checks...")
+    result = subprocess.run(["python3", "scripts/sanity_check.py", "outputs/submission_final_golden.csv"])
+    if result.returncode != 0:
+        print("\n❌ Sanity checks failed! Halting submission.")
+        exit(1)
+    print("\n✅ Proceeding to Kaggle Submission Phase.")

@@ -1,0 +1,9 @@
+data/*.csv
+data/*.zip
+outputs/*.csv
+__pycache__/
+**/__pycache__/
+.pytest_cache/
+*.joblib
+*.pkl
+*.bin
