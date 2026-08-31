@@ -29,6 +29,12 @@ class DataProcessor:
                 # For percentiles, handle NaNs gracefully (rank natively handles NaNs by assigning NaN or omitting)
                 df[f'{col}_pct'] = df[col].rank(pct=True)
 
+        # Exact-Grid Value-Level TE features
+        if 'daily_screen_time_hours' in df.columns:
+            df['daily_screen_time_hours_rounded'] = df['daily_screen_time_hours'].round(1).astype(str)
+        if 'weekend_screen_time' in df.columns:
+            df['weekend_screen_time_rounded'] = df['weekend_screen_time'].round(1).astype(str)
+
         # 3. Memory downcasting: cast all engineered continuous floats strictly to np.float32
         engineered_cols = ['other_screen', 'unaccounted_hours', 'cpr', 'utl_ratio', 'work_shield_factor'] + \
                           [f'{col}_log' for col in numeric_cols if col not in ['id', 'target']] + \

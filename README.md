@@ -1,11 +1,14 @@
-# 🏆 Kaggle Playground Series S6E8 — Modular 5-Fold Stratified Triple Ensemble Pipeline
+# 🏆 Kaggle Playground Series S6E8 — Modular 10-Fold Stratified Dual Ensemble Pipeline
 
 [![Kaggle Public Notebook](https://img.shields.io/badge/Kaggle-Public%20Notebook-blue?style=for-the-badge&logo=kaggle)](https://www.kaggle.com/code/aliazizi1/playground-series-s6e8-starter-pipeline)
 [![GitHub Repository](https://img.shields.io/badge/GitHub-Modular%20Repo-black?style=for-the-badge&logo=github)](https://github.com/AliAziziDH/playground-series-s6e8)
 [![Python 3.12](https://img.shields.io/badge/Python-3.12-green?style=for-the-badge&logo=python)](https://python.org)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow?style=for-the-badge)](LICENSE)
 
-An enterprise-grade, modular **5-Fold Stratified Triple Ensemble Architecture** combining **CatBoost (50%)**, **LightGBM (30%)**, and **XGBoost (20%)** with automated domain feature engineering and **Nelder-Mead Post-Processing Probability Multiplier Tuning** for Kaggle Playground Series S6E8.
+An enterprise-grade, modular **10-Fold Stratified Dual GBDT Ensemble Architecture** combining **LightGBM** and **XGBoost** with automated domain feature engineering, exact-grid Value-Level Target Encoding, and **Gauss-Rank Logistic Meta-Stacking** for Kaggle Playground Series S6E8.
+
+> **Engineering Note (CatBoost Omission):**
+> CatBoost has been explicitly removed from this architecture following ablation studies. The model yielded near-zero ensemble weight (≤ 0.0026) while consuming excessive compute and memory on the 691k row dataset. We rely exclusively on highly-capacitated LightGBM and regularized XGBoost models.
 
 ---
 
@@ -13,26 +16,26 @@ An enterprise-grade, modular **5-Fold Stratified Triple Ensemble Architecture** 
 
 ```mermaid
 graph TD
-    A["Raw Data Ingestion (train.csv / test.csv)"] --> B["Modular Feature Processor (Log & Pct Ranks)"]
-    B --> C["5-Fold Stratified K-Fold Splitter"]
-    C --> D["CatBoost Classifier (50% Weight)"]
-    C --> E["LightGBM Classifier (30% Weight)"]
-    C --> F["XGBoost Classifier (20% Weight)"]
-    D --> G["Weighted Out-Of-Fold (OOF) Probability Blending"]
-    E --> G
+    A["Raw Data Ingestion (train.csv / test.csv)"] --> B["Modular Feature Processor & Exact-Grid Target Encoding"]
+    B --> C["10-Fold Stratified K-Fold Splitter"]
+    C --> E["LightGBM Classifier (High Capacity)"]
+    C --> F["XGBoost Classifier"]
+    E --> G["OOF Predictions Extraction"]
     F --> G
-    G --> H["Nelder-Mead Threshold Multiplier Optimizer"]
-    H --> I["Test Prediction & Submission Generator (submission.csv)"]
+    G --> H["OOFLibraryBlender: Gauss-Rank Transformation + Public 74-Model OOF Pool"]
+    H --> I["Logistic Meta-Learner (C=0.03, unconstrained weights)"]
+    I --> J["Test Prediction & Submission Generator (submission.csv)"]
 ```
 
 ---
 
 ## 🚀 Key Highlights & Innovations
 
-- **Modular Enterprise Package Structure**: Decoupled modules for data preprocessing, cross-validation, multi-model training, and threshold optimization.
-- **Stratified 5-Fold Cross Validation**: Guarantees zero data leakage and preserves target distribution across folds.
-- **Triple Model Blend**: Leverages model diversity across CatBoost, LightGBM, and XGBoost gradient boosters.
-- **Nelder-Mead Post-Processing**: Optimizes per-class probability multipliers on OOF predictions to maximize Macro F1 / Balanced Accuracy.
+- **Modular Enterprise Package Structure**: Decoupled modules for data preprocessing, exact-grid target encoding, multi-model training, and OOF meta-stacking.
+- **Stratified 10-Fold Cross Validation**: Guarantees zero data leakage and preserves target distribution across folds.
+- **Dual GBDT Ensemble**: Leverages model diversity across LightGBM and XGBoost gradient boosters without the heavy compute burden of CatBoost.
+- **Exact-Grid Value-Level TE**: Natural NaN propagation combined with strict exact-grid target encoding on categoricals and continuous variables (via truncation).
+- **Meta-Stacking Integration**: Seamless blending of high-capacity standalone OOF vectors with extensive public OOF libraries using unconstrained logistic regression (active error cancellation).
 
 ---
 
@@ -43,9 +46,9 @@ playground-series-s6e8/
 ├── src/
 │   ├── __init__.py
 │   ├── config.py           # Hyperparameters, random seeds, and fold settings
-│   ├── data_loader.py      # Feature engineering and data preprocessing
-│   ├── model_trainer.py    # 5-Fold Stratified Triple Ensemble trainer
-│   ├── optimizer.py        # Nelder-Mead threshold optimization engine
+│   ├── model/
+│   │   ├── formulation.py  # DataProcessor logic
+│   │   └── solver.py       # Trainers, Encoders & Meta-Stackers
 │   └── pipeline.py         # End-to-end production execution pipeline
 ├── tests/                  # Automated pytest verification suite
 ├── playground_s6e8_pipeline.ipynb # Interactive Kaggle notebook version
@@ -58,13 +61,12 @@ playground-series-s6e8/
 
 ## 📈 Benchmarks & Model Performance
 
-| Component | Strategy / Model | OOF Gain / Impact |
-| :--- | :--- | :--- |
-| **Validation** | 5-Fold Stratified K-Fold | Baseline Leak-Free CV |
-| **Ensemble Model 1** | CatBoost Classifier (Weight: 0.50) | High Tree Depth Stability |
-| **Ensemble Model 2** | LightGBM Classifier (Weight: 0.30) | Fast Split Optimization |
-| **Ensemble Model 3** | XGBoost Classifier (Weight: 0.20) | Regularized Gradient Trees |
-| **Post-Processing** | Nelder-Mead Threshold Tuning | **+0.0024 OOF Score Increase** |
+| Component | Strategy / Model |
+| :--- | :--- |
+| **Validation** | 10-Fold Stratified K-Fold |
+| **Ensemble Model 1** | LightGBM Classifier (num_leaves=255, reg_lambda=15.0) |
+| **Ensemble Model 2** | XGBoost Classifier (max_depth=6) |
+| **Meta-Stacker** | OOFLibraryBlender (Gauss-Rank + Logistic Regression) |
 
 ---
 

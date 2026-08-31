@@ -13,7 +13,7 @@ import warnings
 warnings.filterwarnings('ignore')
 
 class ValueLevelTargetEncoder:
-    def __init__(self, smoothing=10.0, cols=['gender', 'stress_level', 'academic_work_impact']):
+    def __init__(self, smoothing=10.0, cols=['gender', 'stress_level', 'academic_work_impact', 'daily_screen_time_hours_rounded', 'weekend_screen_time_rounded']):
         self.smoothing = smoothing
         self.cols = cols
         self.mappings_ = {}
@@ -92,7 +92,7 @@ class TripleEnsembleTrainer:
             X_val_te = te.transform(X_val)
 
             # Drop the original categorical columns that were encoded
-            cols_to_drop = [c for c in ['gender', 'stress_level', 'academic_work_impact'] if c in X_train.columns]
+            cols_to_drop = [c for c in ['gender', 'stress_level', 'academic_work_impact', 'daily_screen_time_hours_rounded', 'weekend_screen_time_rounded'] if c in X_train.columns]
             X_train_te = X_train_te.drop(columns=cols_to_drop)
             X_val_te = X_val_te.drop(columns=cols_to_drop)
 
@@ -141,7 +141,7 @@ class TripleEnsembleTrainer:
         test_preds = np.zeros((len(X_test), 2))
         for (lgb, te), xgb in zip(self.models_lgb, self.models_xgb):
             X_test_te = te.transform(X_test)
-            cols_to_drop = [c for c in ['gender', 'stress_level', 'academic_work_impact'] if c in X_test_te.columns]
+            cols_to_drop = [c for c in ['gender', 'stress_level', 'academic_work_impact', 'daily_screen_time_hours_rounded', 'weekend_screen_time_rounded'] if c in X_test_te.columns]
             X_test_te = X_test_te.drop(columns=cols_to_drop).select_dtypes(exclude=['object', 'category'])
 
             p_lgb = lgb.predict_proba(X_test_te)[:, 1]

@@ -9,9 +9,9 @@ N_SPLITS = 10
 
 MODEL_PARAMS = {
     "lgbm": {
-        "num_leaves": 127,
+        "num_leaves": 255,
         "min_child_samples": 150,
-        "reg_lambda": 10.0,
+        "reg_lambda": 15.0,
         "learning_rate": 0.03,
         "random_state": RANDOM_STATE,
         "verbose": -1,
