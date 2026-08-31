@@ -7,3 +7,5 @@ __pycache__/
 *.joblib
 *.pkl
 *.bin
+data/
+data/oof_library/

@@ -61,7 +61,8 @@ def test_feature_engineering_types(dummy_data):
         assert df_transformed[col].dtype == np.float32, f"{col} should be float32"
 
 def test_target_encoder_leak_free(dummy_data, dummy_target):
-    te = ValueLevelTargetEncoder(smoothing=10.0, cols=['gender', 'stress_level', 'academic_work_impact'])
+    te = ValueLevelTargetEncoder(smoothing=10.0, cols=['gender', 'stress_level', 'academic_work_impact', 'daily_screen_time_hours_rounded'])
+    dummy_data['daily_screen_time_hours_rounded'] = dummy_data['daily_screen_time_hours'].round(1).astype(str)
 
     # Transform
     encoded = te.fit_transform(dummy_data, dummy_target)
@@ -76,7 +77,8 @@ def test_target_encoder_leak_free(dummy_data, dummy_target):
     assert 'daily_screen_time_hours_te' not in encoded.columns
 
 def test_target_encoder_shapes(dummy_data, dummy_target):
-    te = ValueLevelTargetEncoder(smoothing=10.0, cols=['gender', 'stress_level', 'academic_work_impact'])
+    te = ValueLevelTargetEncoder(smoothing=10.0, cols=['gender', 'stress_level', 'academic_work_impact', 'daily_screen_time_hours_rounded'])
+    dummy_data['daily_screen_time_hours_rounded'] = dummy_data['daily_screen_time_hours'].round(1).astype(str)
     encoded_train = te.fit_transform(dummy_data, dummy_target)
 
     assert len(encoded_train) == len(dummy_data)
